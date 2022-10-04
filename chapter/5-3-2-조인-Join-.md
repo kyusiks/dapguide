@@ -6,11 +6,11 @@ tags:
 # 과목5. 데이터베이스 설계와 이용
 # 제3장 데이터베이스 성능 개선
 # 제2절 조인(Join)
-                            <p class="text">조인은 카티션 프로덕트를 수행 후 셀렉션과 프로젝션을 수행하는 데이터베이스의 연산으로, 관계형 데이터베이스에서 공통적으로 사용하고 있는 조인 기법(Join Technique)에는 Nested loops 조인, Sort merge 조인, Hash 조인 등이 있다. 이 이외에도 일부 데이터베이스에서는 Hybrid 조인, Star 조인과 Semi 조인 등을 지원한다.
+5-3-1-성능-개선-방법론.md                            <p class="text">조인은 카티션 프로덕트를 수행 후 셀렉션과 프로젝션을 수행하는 데이터베이스의 연산으로, 관계형 데이터베이스에서 공통적으로 사용하고 있는 조인 기법(Join Technique)에는 Nested loops 조인, Sort merge 조인, Hash 조인 등이 있다. 이 이외에도 일부 데이터베이스에서는 Hybrid 조인, Star 조인과 Semi 조인 등을 지원한다.
 
 ![](../images_files/db_j01.gif)
 
-  * [그림 5-3-4] 조인 설명">
+  * [그림 5-3-4] 조인 설명
 
 조인은 위에서 언급한 조인을 수행하는 내부적인 매카니즘으로 구분을 할 수도 있지만, 조인을 기술한 조인 조건의 연산자를 기준으로 조인의 종류를 나누기도 한다. 예를 들어, 조인 조건이 (=)로 정의되었다 면 equi 조인이라 하며, &gt;=, &lt;=, between 등이 조인 조건에 기술되었다면 between 조인이라 한다.
 
@@ -18,7 +18,7 @@ tags:
 
 ![](../images_files/db_j02.gif)
 
-  * [그림 5-3-5] 조인 결과">
+  * [그림 5-3-5] 조인 결과
 
 위에서 조인을 분류한 내용들을 이해하려면 Nested Loop 조인의 알고리즘을 이해하여야 한다. 이 알고리즘을 보면 두 개의 Loop가 중첩되어 조인이 수행되고 있는 것을 알 수 있다. 여기에서 EMP 테 이블을 Outer 집합이라 하고, DEPT 테이블을 Inner 집합이라 한다. 그 이유는, EMP 테이블은 바깥 쪽 루프에서 액세스되고 DEPT 테이블은 안쪽 루프에서 액세스되는 테이블이기 때문이다. 즉, Outer 집합이란 Nested Loop 조인에서 바깥쪽 루프에서 액세스되는 집합을 의미하고, Inner 집합은 안쪽 루프에서 액세스되는 집합을 의미한다. 그런데 Outer 집합이라는 용어가 Nested Loop 조인에서만 사용되는 것은 아니다. 조인 연산이 가지는 특성상 어떤 조인 기법을 사용하더라도 항상 Outer 집합과 Inner 집합이 나타나게 된다. 물론 다른 조인 기법에서는 Nested-Loop 조인처럼 Outer 집합과 Inner 집합의 구분이 명확하지 않아 이 용어의 사용이 적절하지 않다고 주장하는 사람들도 있지만 이 러한 용어가 나타난 배경을 이해하고 사용한다면 굳이 사용하지 못할 이유가 없다고 생각한다.
 
@@ -26,7 +26,7 @@ Outer 집합과 Inner 집합은 조인을 수행하는 각 단계에 그 집합�
 
 ![](../images_files/db_j03.gif)
 
-  * [그림 5-3-6] Nested-Loop 조인 알고리즘">
+  * [그림 5-3-6] Nested-Loop 조인 알고리즘
 
 ## 1. Nested-Loop 조인
 
@@ -40,12 +40,11 @@ Outer 집합과 Inner 집합은 조인을 수행하는 각 단계에 그 집합�
 
 ![](../images_files/db_j04.gif)
 
-  * [그림 5-3-7] Indexed Nested-loop 조인">
+  * [그림 5-3-7] Indexed Nested-loop 조인
 
 CASE1의 경우라면 다음과 같은 절차로 수행을 하게 될 것이다.
 
 <ol class="ct_num">
-<li style="list-style-type:none;">
 <ol class="ct_num">
   * ① CASE1의 경우 사원 테이블을 드라이빙 테이블로 선정하였다. 그런데 사원 테이블은 주어진 조건 중에서 사용 가능한 인덱스가 없으므로 테이블 스캔으로 전체 데이터를 검색한다.
 
@@ -65,9 +64,7 @@ CASE1의 경우라면 다음과 같은 절차로 수행을 하게 될 것이다.
 Indexed nested-loop 조인으로 수행되려면 Inner 테이블에 조인 조건으로 사용된 칼럼에 반드 시 인덱스가 존재해야만 한다. Inner 테이블에 인덱스가 존재하지 않는다면 Outer 테이블에서 추 출된 로우의 수만큼 Inner 테이블을 반복해서 테이블 스캔하게 된다. 이러한 비효율을 없애기 위 해 옵티마이저는 드라이빙 조건의 범위가 넓거나 Inner 테이블의 사이즈가 크면 Sort-merge 조 인이나 Hash 조인으로 실행 계획을 유도하려oop 조인에서 결과 집합이 출력되는 순서는 드라이빙 테이블을 액세스한 순서와 동일하 다. 즉, 드라이빙 테이블을 Full Scan했다면 드라이빙 테이블의 데이터 저장 순서로 출력되고, 드 라이빙 테이블 액세스 시에 인덱스를 이용했다면 이용한 인덱스의 순서로 결과 집합이 출력된다.
 
 <ol class="ct_num">
-<li style="list-style-type:none;">
 <ol class="ct_num">
-<li style="list-style-type:none;">
 
   * CASE 1인 경우 사원 테이블에 데이터가 저장된 순서
 
@@ -129,7 +126,7 @@ Sort-merge 조인이 동등 조인 조건에 대해서만 수행이 가능한 �
 </ol>
 ![](../images_files/db_j05.gif)
 
-  * [그림 5-3-8] Sort-merge 조인">
+  * [그림 5-3-8] Sort-merge 조인
 
   * 조인 조건
 
@@ -176,7 +173,7 @@ Hash 조인은 다음과 같은 여러 단계로 나누어 조인을 수행한�
 
 ![](../images_files/db_j06.gif)
 
-  * [그림 5-3-9] Hash 조인">
+  * [그림 5-3-9] Hash 조인
 
 * Step 1 - 파티션 수
 
@@ -224,7 +221,7 @@ Indexed Nested-Loop 조인에서 Inner 테이블의 조인 속성이 non-cluster
 
 ![](../images_files/db_j07.gif)
 
-  * [그림 5-3-10] Hybrid 조인">
+  * [그림 5-3-10] Hybrid 조인
 
 <br><br><br>
 > 출처 : 데이터온에어 – 한국데이터산업진흥원([https://dataonair.or.kr](https://dataonair.or.kr))
