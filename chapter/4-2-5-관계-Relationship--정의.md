@@ -3,9 +3,7 @@ title: 4-2-5. 관계(Relationship) 정의
 tags: 
 ---
 
-###### 과목4. 데이터 모델링
-###### 제2장 개념 데이터 모델링
-###### 제5절 관계(Relationship) 정의
+> 과목4. 데이터 모델링 > 제2장 개념 데이터 모델링 > 제5절 관계(Relationship) 정의
 
 ## 1. 관계(Relationship)란 ?
 
